@@ -235,19 +235,16 @@ export default function HygienePage() {
       {/* 1. Header & Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-medium text-black tracking-tight mb-1">
+          <h1 className="text-[18px] sm:text-3xl font-medium text-black tracking-tight mb-1 whitespace-nowrap truncate">
             Kitchen Hygiene & Safety Logs
           </h1>
           <p className="text-base text-black/80 font-medium hidden md:block">
             Record daily safety inspections and attach photo proofs.
           </p>
-          <p className="text-[14px] text-black/80 font-medium md:hidden">
-            Record daily safety inspections and attach photo proofs.
-          </p>
         </div>
 
         {/* Date Selector */}
-        <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-lg px-3 py-2 shadow-sm w-full sm:w-auto shrink-0">
+        <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-lg px-3 py-2 w-full sm:w-auto shrink-0">
           <Calendar className="w-4 h-4 text-black/40" />
           <span className="font-medium text-[14px] text-black shrink-0">Log Date:</span>
           <input 
@@ -270,19 +267,22 @@ export default function HygienePage() {
 
       {/* 2. Items List */}
       <div className="space-y-4 mt-2">
-        <div className="flex items-center justify-between">
-          <h2 className="text-base font-medium text-black flex items-center gap-3">
-            Daily Safety Checklist
-            <span className="text-[12px] font-medium text-brand bg-brand/10 px-2.5 py-1 rounded-md border border-brand/20">
+        <div className="flex flex-row items-center justify-between gap-2">
+          <div className="flex flex-col gap-1">
+            <h2 className="text-[15px] sm:text-base font-medium text-black leading-tight">
+              Daily Safety Checklist
+            </h2>
+            <span className="w-fit text-[11px] sm:text-[12px] font-medium text-brand bg-brand/10 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md border border-brand/20">
               {tasks.filter(t => t.status === 'completed').length} / {tasks.length} Completed
             </span>
-          </h2>
+          </div>
           <button 
             onClick={() => setIsAddModalOpen(true)}
-            className="bg-brand hover:bg-brand-hover text-white font-medium text-[13px] px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 shadow-sm shrink-0"
+            className="bg-brand hover:bg-brand-hover text-white font-medium text-[12px] sm:text-[13px] px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg transition-colors flex items-center gap-1 sm:gap-1.5 shadow-sm shrink-0"
           >
             <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-            <span>Add Task</span>
+            <span className="hidden sm:inline">Add Task</span>
+            <span className="sm:hidden">Add</span>
           </button>
         </div>
 

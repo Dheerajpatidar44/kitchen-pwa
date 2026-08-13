@@ -71,20 +71,53 @@ export default function NotificationsPage() {
     }
   };
 
-  const deleteNotification = async (id: string) => {
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
-      const token = localStorage.getItem("moncradel_kitchen_token") || localStorage.getItem("token") || "";
-      await axios.delete(`${apiUrl}/notifications/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setNotifications(notifications.filter(n => n._id !== id));
-      if (selectedNotification?._id === id) {
-         setSelectedNotification(null);
+  const deleteNotification = (id: string) => {
+    Swal.fire({
+      title: 'Delete this notification?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#059669',
+      cancelButtonColor: '#f43f5e',
+      confirmButtonText: 'Yes, delete it',
+      cancelButtonText: 'Cancel',
+      backdrop: 'rgba(15, 23, 42, 0.4)',
+      customClass: {
+        popup: 'rounded-2xl',
+        title: 'text-lg font-semibold text-slate-800',
+        confirmButton: 'rounded-lg font-medium shadow-sm',
+        cancelButton: 'rounded-lg font-medium',
+        container: 'backdrop-blur-sm'
       }
-    } catch (error) {
-      console.error("Error deleting notification", error);
-    }
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+          const token = localStorage.getItem("moncradel_kitchen_token") || localStorage.getItem("token") || "";
+          await axios.delete(`${apiUrl}/notifications/${id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setNotifications(notifications.filter(n => n._id !== id));
+          if (selectedNotification?._id === id) {
+             setSelectedNotification(null);
+          }
+          Swal.fire({
+            title: 'Deleted!',
+            text: 'Notification has been deleted.',
+            icon: 'success',
+            confirmButtonColor: '#059669',
+            backdrop: 'rgba(15, 23, 42, 0.4)',
+            customClass: {
+              popup: 'rounded-2xl',
+              confirmButton: 'rounded-lg font-medium shadow-sm',
+              container: 'backdrop-blur-sm'
+            }
+          });
+        } catch (error) {
+          console.error("Error deleting notification", error);
+        }
+      }
+    });
   };
 
   const handleClearAll = () => {
@@ -144,14 +177,14 @@ export default function NotificationsPage() {
     <div className="space-y-6 animate-fadeIn pb-16 max-w-2xl mx-auto lg:max-w-none lg:mx-0 font-sans">
       
       {/* Header Section */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in-up">
+      <div className="flex flex-row items-center justify-between gap-1 sm:gap-4 animate-fade-in-up">
         <div>
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl sm:text-3xl font-medium text-slate-900 tracking-tight mb-1">
-              Kitchen Notifications Hub
+          <div className="flex items-center gap-2">
+            <h1 className="text-[18px] sm:text-3xl font-medium text-slate-900 tracking-tight mb-0 sm:mb-1">
+              Notifications
             </h1>
             {unreadCount > 0 && (
-              <span className="hidden sm:inline-block bg-brand/10 text-brand text-[13px] font-medium px-2.5 py-1 rounded-full">
+              <span className="inline-block bg-brand/10 text-brand text-[11px] sm:text-[13px] font-medium px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full whitespace-nowrap">
                 {unreadCount} Unread
               </span>
             )}
@@ -161,34 +194,26 @@ export default function NotificationsPage() {
           </p>
         </div>
 
-        <div className="flex items-center justify-between sm:justify-start w-full sm:w-auto gap-3 shrink-0 self-start sm:self-auto mt-2 sm:mt-0">
-          <div className="sm:hidden shrink-0">
-            {unreadCount > 0 && (
-              <span className="bg-brand/10 text-brand text-[13px] font-medium px-3 py-1.5 rounded-full whitespace-nowrap">
-                {unreadCount} Unread
-              </span>
-            )}
-          </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <button
-              onClick={() => {
-                notifications.forEach(n => {
-                  if (!n.isRead) markAsRead(n._id);
-                });
-              }}
-              className="bg-white hover:bg-slate-50 text-slate-700 text-[13px] font-medium px-4 py-2.5 sm:py-2 rounded-lg border border-slate-200 transition-colors flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
-            >
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-              <span>Mark All Read</span>
-            </button>
-            <button
-              onClick={handleClearAll}
-              className="bg-white hover:bg-rose-50 text-rose-600 text-[13px] font-medium w-10 h-[42px] sm:h-[38px] rounded-lg border border-slate-200 transition-colors flex items-center justify-center cursor-pointer shrink-0"
-              title="Clear All Notifications"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </div>
+        <div className="flex items-center justify-end gap-1 sm:gap-2 shrink-0">
+          <button
+            onClick={() => {
+              notifications.forEach(n => {
+                if (!n.isRead) markAsRead(n._id);
+              });
+            }}
+            className="bg-white hover:bg-slate-50 text-slate-700 text-[12px] sm:text-[13px] font-medium px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg border border-slate-200 transition-colors flex items-center gap-1 sm:gap-1.5 cursor-pointer whitespace-nowrap"
+            title="Mark All Read"
+          >
+            <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600 shrink-0" />
+            <span>Mark All Read</span>
+          </button>
+          <button
+            onClick={handleClearAll}
+            className="bg-white hover:bg-rose-50 text-rose-600 font-medium w-8 h-8 sm:w-10 sm:h-[38px] rounded-lg border border-slate-200 transition-colors flex items-center justify-center cursor-pointer shrink-0"
+            title="Clear All Notifications"
+          >
+            <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+          </button>
         </div>
       </div>
 
@@ -228,7 +253,7 @@ export default function NotificationsPage() {
                 <div className="min-w-0 w-full flex flex-col gap-1">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-2 min-w-0">
-                      <h3 className="font-semibold text-slate-900 text-[15px] sm:text-[16px] leading-tight truncate">
+                      <h3 className="font-medium text-slate-900 text-[15px] sm:text-[16px] leading-tight truncate">
                         {n.title}
                       </h3>
                       {!n.isRead && (
@@ -239,7 +264,7 @@ export default function NotificationsPage() {
                       {getTimeAgo(n.createdAt)}
                     </span>
                   </div>
-                  <p className="text-[14px] sm:text-[15px] text-slate-700 font-medium leading-relaxed pr-2 sm:pr-8">
+                  <p className="text-[12px] sm:text-[13px] text-slate-700 font-medium leading-relaxed pr-2 sm:pr-8">
                     {n.message}
                   </p>
                 </div>
@@ -258,13 +283,13 @@ export default function NotificationsPage() {
             onClick={() => setSelectedNotification(null)}
           />
           <div className="relative bg-white w-full sm:max-w-md h-auto max-h-[85vh] overflow-hidden animate-slide-up shadow-2xl rounded-t-2xl sm:rounded-2xl pointer-events-auto flex flex-col font-sans">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-white/50 backdrop-blur-sm">
+            <div className="flex items-center justify-between px-6 py-4 bg-white/50 backdrop-blur-sm">
               <div className="flex items-center gap-3">
                 <div className="bg-brand/10 p-2 rounded-xl text-brand">
                    <Bell className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-900 leading-tight">Notification Details</h3>
+                  <h3 className="font-medium text-slate-900 leading-tight">Notification Details</h3>
                   <span className="text-[12px] font-medium text-slate-500">{getTimeAgo(selectedNotification.createdAt)}</span>
                 </div>
               </div>
@@ -277,8 +302,8 @@ export default function NotificationsPage() {
             </div>
             
             <div className="p-6 overflow-y-auto">
-              <h4 className="text-[18px] font-semibold text-slate-900 mb-3">{selectedNotification.title}</h4>
-              <p className="text-[15px] text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100">
+              <h4 className="text-[16px] font-medium text-black mb-3">{selectedNotification.title}</h4>
+              <p className="text-[13px] text-slate-700 leading-relaxed">
                 {selectedNotification.message}
               </p>
 
@@ -291,7 +316,7 @@ export default function NotificationsPage() {
               )}
             </div>
 
-            <div className="p-4 border-t border-slate-100 bg-slate-50">
+            <div className="p-4 bg-white">
                <button 
                  onClick={() => deleteNotification(selectedNotification._id)}
                  className="w-full text-center text-rose-500 hover:text-rose-600 font-medium text-[14px] py-2 transition-colors flex justify-center items-center gap-2"

@@ -56,12 +56,12 @@ function KitchenAppInner({ children }: { children: React.ReactNode }) {
           {/* Right Column: Header + Scrollable Content */}
           <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
             {/* Header — Fixed at top of content column */}
-            <div className="shrink-0 z-30">
+            <div className={`shrink-0 z-30 ${pathname === '/more' ? 'hidden md:block' : ''}`}>
               <Header />
             </div>
 
             {/* Main Content — ONLY this area scrolls */}
-            <main className="flex-1 overflow-y-auto px-4 py-6 pb-24 lg:pb-8">
+            <main className={`flex-1 overflow-y-auto lg:pb-8 ${pathname === '/more' ? 'p-0 md:px-4 md:py-6 md:pb-24' : 'px-4 py-6 pb-24'}`}>
               <div className="w-full">
                 {children}
               </div>
@@ -69,9 +69,11 @@ function KitchenAppInner({ children }: { children: React.ReactNode }) {
           </div>
 
           {/* Mobile & Tablet Bottom Navigation Bar */}
-          <div className="lg:hidden">
-            <Navigation mode="mobile" />
-          </div>
+          {pathname !== '/more' && (
+            <div className="lg:hidden">
+              <Navigation mode="mobile" />
+            </div>
+          )}
 
           <QuickActionModal />
           <PrintableLabelModal />

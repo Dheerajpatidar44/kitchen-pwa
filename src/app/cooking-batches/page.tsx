@@ -9,7 +9,9 @@ import {
   X,
   PackageCheck,
   Trash2,
-  UtensilsCrossed
+  UtensilsCrossed,
+  Package,
+  ChefHat
 } from "lucide-react";
 import Swal from "sweetalert2";
 
@@ -311,9 +313,7 @@ export default function ProductionPage() {
                   <div className="space-y-3">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0 pr-2">
-                        <span className="text-xs font-medium text-black uppercase tracking-widest mb-1.5 block">
-                          {b.batchNumber}
-                        </span>
+
                         <h2 
                           className="font-medium text-black text-lg leading-tight truncate"
                           title={b.mealId?.name}
@@ -326,7 +326,7 @@ export default function ProductionPage() {
                     <div className="space-y-2 text-[14px] pt-1">
                       <div className="flex flex-row items-center justify-between gap-2">
                         <span className="text-black font-medium flex items-center gap-1.5 shrink-0">
-                          📦 <span>Quantity</span>
+                          <Package className="w-4 h-4 text-sky-500" /> <span>Quantity</span>
                         </span>
                         <span className="font-medium text-black text-right truncate">
                           {b.quantity} Meals
@@ -334,7 +334,7 @@ export default function ProductionPage() {
                       </div>
                       <div className="flex flex-row items-center justify-between gap-2">
                         <span className="text-black font-medium flex items-center gap-1.5 shrink-0">
-                          👨‍🍳 <span>Cooked By</span>
+                          <ChefHat className="w-4 h-4 text-amber-500" /> <span>Cooked By</span>
                         </span>
                         <span className="font-medium text-black text-right truncate">
                           Kitchen Staff
@@ -348,6 +348,7 @@ export default function ProductionPage() {
                       b.status === 'pending' ? 'bg-amber-50 text-amber-700 border-amber-200' :
                       b.status === 'preparing' ? 'bg-blue-50 text-blue-700 border-blue-200' :
                       b.status === 'ready' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                      b.status === 'completed' ? 'bg-teal-50 text-teal-700 border-teal-200' :
                       'bg-slate-100 text-black border-slate-300'
                     }`}>
                       {b.status}
@@ -401,6 +402,7 @@ export default function ProductionPage() {
                       selectedBatch.status === 'pending' ? 'text-amber-800' :
                       selectedBatch.status === 'preparing' ? 'text-blue-800' :
                       selectedBatch.status === 'ready' ? 'text-emerald-800' :
+                      selectedBatch.status === 'completed' ? 'text-teal-800' :
                       'text-black'
                     }`}>
                       {selectedBatch.status}

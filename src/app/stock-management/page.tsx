@@ -179,7 +179,7 @@ export default function InventoryPage() {
       {/* 1. Header & Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-medium text-black tracking-tight mb-1">
+          <h1 className="text-xl sm:text-3xl font-medium text-black tracking-tight mb-1 whitespace-nowrap truncate">
             Inventory & Stock Control
           </h1>
           <p className="text-base text-black/80 font-medium hidden md:block">
@@ -211,24 +211,24 @@ export default function InventoryPage() {
       </div>
 
       {/* 2. Summary Metric Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-2 gap-4">
-        <div className="bg-sky-50/50 rounded-xl p-5 flex items-center gap-4 border border-sky-100">
-          <div className="w-12 h-12 rounded-full bg-sky-100 flex items-center justify-center shrink-0">
-            <Package className="w-6 h-6 text-sky-600" />
+      <div className="grid grid-cols-2 gap-3 sm:gap-4">
+        <div className="bg-sky-100/50 rounded-lg p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+          <div className="w-10 h-10 sm:w-auto sm:h-auto rounded-full bg-sky-100 sm:bg-transparent flex items-center justify-center shrink-0">
+            <Package className="w-5 h-5 sm:w-8 sm:h-8 text-sky-500" strokeWidth={1.5} />
           </div>
           <div className="flex flex-col">
-            <p className="text-[13px] text-black/60 font-semibold uppercase tracking-wider mb-1">Total Items</p>
-            <h3 className="text-2xl font-semibold text-black leading-none">{totalItems}</h3>
+            <p className="text-[11px] sm:text-[13px] text-black/70 sm:text-black font-medium sm:font-medium uppercase tracking-wider mb-1">Total Items</p>
+            <h3 className="text-2xl font-medium text-black leading-none">{totalItems < 10 ? `0${totalItems}` : totalItems}</h3>
           </div>
         </div>
 
-        <div className="bg-rose-50/50 rounded-xl p-5 flex items-center gap-4 border border-rose-100">
-          <div className="w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center shrink-0">
-            <AlertTriangle className="w-6 h-6 text-rose-600" />
+        <div className="bg-rose-100/50 rounded-lg p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+          <div className="w-10 h-10 sm:w-auto sm:h-auto rounded-full bg-rose-100 sm:bg-transparent flex items-center justify-center shrink-0">
+            <AlertTriangle className="w-5 h-5 sm:w-8 sm:h-8 text-rose-500" strokeWidth={1.5} />
           </div>
           <div className="flex flex-col">
-            <p className="text-[13px] text-black/60 font-semibold uppercase tracking-wider mb-1">Low / Critical Stock</p>
-            <h3 className="text-2xl font-semibold text-black leading-none">{lowStockCount}</h3>
+            <p className="text-[11px] sm:text-[13px] text-black/70 sm:text-black font-medium sm:font-medium uppercase tracking-wider mb-1">Low / Critical</p>
+            <h3 className="text-2xl font-medium text-black leading-none">{lowStockCount < 10 ? `0${lowStockCount}` : lowStockCount}</h3>
           </div>
         </div>
       </div>

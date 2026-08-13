@@ -188,7 +188,7 @@ export default function Header() {
           {/* Mobile search button */}
           <button
             onClick={() => setShowSearchInput(!showSearchInput)}
-            className="md:hidden p-2.5 text-slate-600 hover:bg-slate-200/50 rounded-full transition-colors"
+            className="hidden p-2.5 text-slate-600 hover:bg-slate-200/50 rounded-full transition-colors"
             title="Search"
           >
             <Search className="w-5 h-5" />
@@ -207,7 +207,7 @@ export default function Header() {
           </Link>
 
           {/* Profile Section */}
-          <div className="relative group ml-1 sm:ml-2">
+          <div className="relative group ml-1 sm:ml-2 hidden md:block">
             <div className="flex items-center gap-3 cursor-pointer py-1">
               <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden border-2 border-white shadow-sm bg-slate-100 flex items-center justify-center shrink-0">
                 {profileData.avatar ? (

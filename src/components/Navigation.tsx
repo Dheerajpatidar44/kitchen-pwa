@@ -42,7 +42,7 @@ export default function Navigation({ mode }: NavigationProps) {
             <Link
               key={item.href}
               href={item.href}
-              className="flex flex-col items-center gap-1 group py-1 px-3"
+              className="flex flex-col items-center gap-1 group py-1 px-1"
             >
               <div
                 className={`w-12 h-8 rounded-full flex items-center justify-center transition-all ${
