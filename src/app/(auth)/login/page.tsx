@@ -85,7 +85,7 @@ export default function LoginPage() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/images/bgimage.png"
+          src="/images/loginregisterbg.png"
           alt="Kitchen Background"
           fill
           className="object-cover"
@@ -98,7 +98,7 @@ export default function LoginPage() {
         
         {/* Left Side Content */}
         <div className="flex-1 flex flex-col justify-center px-12 lg:px-24">
-          <div className="max-w-md animate-fade-in-right">
+          <div className="max-w-md animate-slide-in-left" style={{ opacity: 0 }}>
             {/* Logo */}
             <div className="mb-8">
               <Image 
@@ -121,40 +121,25 @@ export default function LoginPage() {
 
             {/* Features */}
             <div className="space-y-6 mt-6">
-              <div className="flex items-start gap-4">
+              <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-full bg-[#114227] flex items-center justify-center shrink-0 shadow-lg shadow-black/10">
                   <ChefHat className="w-5 h-5 text-white" />
                 </div>
-                <div>
-                  <h3 className="font-medium text-black text-[16px]">Manage Easily</h3>
-                  <p className="text-black text-[14px] mt-0.5 font-normal leading-relaxed">
-                    Handle orders, menus & customers<br/>in one dashboard.
-                  </p>
-                </div>
+                <h3 className="font-medium text-black text-[16px]">Manage Easily</h3>
               </div>
 
-              <div className="flex items-start gap-4">
+              <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-full bg-[#114227] flex items-center justify-center shrink-0 shadow-lg shadow-black/10">
                   <ShieldCheck className="w-5 h-5 text-white" />
                 </div>
-                <div>
-                  <h3 className="font-medium text-black text-[16px]">Secure & Reliable</h3>
-                  <p className="text-black text-[14px] mt-0.5 font-normal leading-relaxed">
-                    Your data is always protected<br/>with enterprise-grade security.
-                  </p>
-                </div>
+                <h3 className="font-medium text-black text-[16px]">Secure & Reliable</h3>
               </div>
 
-              <div className="flex items-start gap-4">
+              <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-full bg-[#114227] flex items-center justify-center shrink-0 shadow-lg shadow-black/10">
                   <TrendingUp className="w-5 h-5 text-white" />
                 </div>
-                <div>
-                  <h3 className="font-medium text-black text-[16px]">Grow Your Business</h3>
-                  <p className="text-black text-[14px] mt-0.5 font-normal leading-relaxed">
-                    Powerful insights to help you<br/>scale and succeed.
-                  </p>
-                </div>
+                <h3 className="font-medium text-black text-[16px]">Grow Your Business</h3>
               </div>
             </div>
           </div>
@@ -163,7 +148,7 @@ export default function LoginPage() {
         {/* Right Side Form */}
         <div className="flex-1 flex flex-col items-center justify-center p-6 lg:p-12">
           
-          <div className="w-full max-w-[460px] bg-white rounded-[24px] p-8 lg:p-10 shadow-2xl relative z-10 animate-fade-in-up transition-all duration-500">
+          <div className="w-full max-w-[460px] bg-white rounded-[24px] p-8 lg:p-10 shadow-2xl relative z-10 animate-slide-in-from-right transition-all duration-500" style={{ opacity: 0 }}>
             
             <div className="mb-6">
               <h2 className="text-[28px] font-serif text-slate-900 mb-1.5">Glad to see you again!</h2>

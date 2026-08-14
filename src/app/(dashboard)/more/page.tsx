@@ -65,7 +65,7 @@ export default function MoreMenuPage() {
 
   const handleLogout = () => {
     logout();
-    router.push("/login");
+    window.location.href = "/login";
   };
 
   const menuItems = [

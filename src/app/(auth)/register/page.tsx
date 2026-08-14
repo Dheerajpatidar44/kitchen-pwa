@@ -107,7 +107,7 @@ export default function RegisterPage() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/images/bgimage.png"
+          src="/images/loginregisterbg.png"
           alt="Kitchen Background"
           fill
           className="object-cover"
@@ -120,7 +120,7 @@ export default function RegisterPage() {
         
         {/* Left Side Content */}
         <div className="flex-1 flex flex-col justify-center px-10 lg:px-20">
-          <div className="max-w-md animate-fade-in-right">
+          <div className="max-w-md animate-slide-in-left" style={{ opacity: 0 }}>
             {/* Logo */}
             <div className="mb-6">
               <Image 
@@ -143,40 +143,25 @@ export default function RegisterPage() {
 
             {/* Features */}
             <div className="space-y-6 mt-6">
-              <div className="flex items-start gap-4">
+              <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-full bg-[#114227] flex items-center justify-center shrink-0 shadow-lg shadow-black/10">
                   <ChefHat className="w-5 h-5 text-white" />
                 </div>
-                <div>
-                  <h3 className="font-medium text-black text-[16px]">Easy Onboarding</h3>
-                  <p className="text-black text-[14px] mt-0.5 font-normal leading-relaxed">
-                    Get started in just a few simple steps<br/>and go live in no time.
-                  </p>
-                </div>
+                <h3 className="font-medium text-black text-[16px]">Easy Onboarding</h3>
               </div>
 
-              <div className="flex items-start gap-4">
+              <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-full bg-[#114227] flex items-center justify-center shrink-0 shadow-lg shadow-black/10">
                   <TrendingUp className="w-5 h-5 text-white" />
                 </div>
-                <div>
-                  <h3 className="font-medium text-black text-[16px]">Smart Management</h3>
-                  <p className="text-black text-[14px] mt-0.5 font-normal leading-relaxed">
-                    Tools to manage orders, menus,<br/>inventory and customers efficiently.
-                  </p>
-                </div>
+                <h3 className="font-medium text-black text-[16px]">Smart Management</h3>
               </div>
 
-              <div className="flex items-start gap-4">
+              <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-full bg-[#114227] flex items-center justify-center shrink-0 shadow-lg shadow-black/10">
                   <ShieldCheck className="w-5 h-5 text-white" />
                 </div>
-                <div>
-                  <h3 className="font-medium text-black text-[16px]">Secure & Reliable</h3>
-                  <p className="text-black text-[14px] mt-0.5 font-normal leading-relaxed">
-                    Your data and business are safe<br/>with enterprise-grade security.
-                  </p>
-                </div>
+                <h3 className="font-medium text-black text-[16px]">Secure & Reliable</h3>
               </div>
             </div>
           </div>
@@ -185,7 +170,7 @@ export default function RegisterPage() {
         {/* Right Side Form */}
         <div className="flex-1 flex flex-col items-center justify-center p-6 lg:p-10">
           
-          <div className="w-full max-w-[500px] bg-white rounded-[24px] p-8 shadow-2xl relative z-10 animate-fade-in-up transition-all duration-500">
+          <div className="w-full max-w-[500px] bg-white rounded-[24px] p-8 shadow-2xl relative z-10 animate-slide-in-from-right transition-all duration-500" style={{ opacity: 0 }}>
             
             <div className="mb-6">
               <h2 className="text-[28px] font-serif text-slate-900 mb-1.5">
@@ -245,7 +230,7 @@ export default function RegisterPage() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[14px] font-medium text-slate-800 ml-1">Work Email</label>
+                  <label className="text-[14px] font-medium text-slate-800 ml-1">Email Address</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                       <Mail className="h-4 w-4 text-slate-400" />

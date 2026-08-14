@@ -26,8 +26,15 @@ export function KitchenAuthProvider({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     const saved = localStorage.getItem("moncradel_kitchen_auth");
-    if (saved === "true") {
+    const token = localStorage.getItem("moncradel_kitchen_token");
+    if (saved === "true" && token) {
       setIsAuthenticated(true);
+    } else {
+      // If auth flag is set but token is missing, clean up
+      if (saved === "true" && !token) {
+        localStorage.removeItem("moncradel_kitchen_auth");
+      }
+      setIsAuthenticated(false);
     }
     setIsAuthLoading(false);
   }, []);
@@ -45,7 +52,12 @@ export function KitchenAuthProvider({ children }: { children: React.ReactNode })
   const logout = () => {
     setIsAuthenticated(false);
     localStorage.removeItem("moncradel_kitchen_auth");
+    localStorage.removeItem("moncradel_kitchen_token");
+    localStorage.removeItem("moncradel_kitchen_user");
     localStorage.removeItem("moncradel_splash_seen");
+    localStorage.removeItem("token");
+    // Clear the auth cookie
+    document.cookie = "moncradel_kitchen_token=; path=/; max-age=0; SameSite=Strict";
   };
 
   return (

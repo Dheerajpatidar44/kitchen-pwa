@@ -105,17 +105,7 @@ export default function Sidebar() {
         </div>
       </nav>
 
-      {/* ─── Logout Footer ─── */}
-      <div className="p-3 border-t border-slate-100 shrink-0">
-        <button
-          onClick={handleLogout}
-          title={isCollapsed ? "Log Out" : undefined}
-          className={`w-full group flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-3.5 gap-3'} py-2.5 rounded-lg text-[14px] text-red-600 font-medium hover:bg-red-50 hover:text-red-700 transition-all duration-200`}
-        >
-          <LogOut className="w-[18px] h-[18px] shrink-0" />
-          {!isCollapsed && <span>Log Out</span>}
-        </button>
-      </div>
+
 
     </aside>
   );
