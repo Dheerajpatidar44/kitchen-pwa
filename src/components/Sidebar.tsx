@@ -37,7 +37,7 @@ export default function Sidebar() {
     { name: "Meals", href: "/meals", icon: BookOpen },
     { name: "Notifications", href: "/notifications", icon: Bell },
     { name: "Hygiene & Safety", href: "/hygiene", icon: ShieldCheck },
-    { name: "Staff Management", href: "/staff-management", icon: Users },
+    // { name: "Staff Management", href: "/staff-management", icon: Users },
     { name: "Reports", href: "/reports", icon: BarChart3 },
     { name: "Profile", href: "/profile", icon: User },
   ];

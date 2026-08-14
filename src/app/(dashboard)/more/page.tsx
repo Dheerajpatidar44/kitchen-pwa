@@ -72,7 +72,7 @@ export default function MoreMenuPage() {
     { name: "My Profile", href: "/profile", icon: User, color: "text-blue-600", bg: "bg-blue-50" },
     { name: "Notifications", href: "/notifications", icon: Bell, color: "text-amber-600", bg: "bg-amber-50" },
     { name: "Meals Catalog", href: "/meals", icon: BookOpen, color: "text-brand", bg: "bg-brand/10" },
-    { name: "Staff Management", href: "/staff-management", icon: Users, color: "text-purple-600", bg: "bg-purple-50" },
+    // { name: "Staff Management", href: "/staff-management", icon: Users, color: "text-purple-600", bg: "bg-purple-50" },
     { name: "Hygiene & Safety", href: "/hygiene", icon: ShieldCheck, color: "text-teal-600", bg: "bg-teal-50" },
     { name: "Reports & Analytics", href: "/reports", icon: BarChart3, color: "text-indigo-600", bg: "bg-indigo-50" },
   ];

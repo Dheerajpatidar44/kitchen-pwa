@@ -10,7 +10,7 @@ import axios from "axios";
 import { useKitchenAuth } from "@/context/KitchenAuthContext";
 
 export default function ProfilePage() {
-  const { logout } = useKitchenAuth();
+  const { logout, recheckProfile } = useKitchenAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Profile States
@@ -170,6 +170,8 @@ export default function ProfilePage() {
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 2500);
       setIsEditModalOpen(false); // Close modal on success
+      // Re-check profile completion to unlock other pages
+      await recheckProfile();
     } catch (err) {
       console.error("Failed to save profile", err);
       alert("Failed to save profile. Please try again.");
@@ -412,31 +414,31 @@ export default function ProfilePage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
                       <label className={labelClass}>FSSAI License Number</label>
-                      <input type="text" value={fssaiLicenseNumber} onChange={(e) => setFssaiLicenseNumber(e.target.value)} className={inputClass} placeholder="e.g. FSSAI-1234567890" />
+                      <input type="text" value={fssaiLicenseNumber} onChange={(e) => setFssaiLicenseNumber(e.target.value)} className={inputClass} placeholder="e.g. FSSAI-1234567890" required />
                     </div>
                     <div>
                       <label className={labelClass}>GST Number</label>
-                      <input type="text" value={gstNumber} onChange={(e) => setGstNumber(e.target.value)} className={inputClass} placeholder="22AAAAA0000A1Z5" />
+                      <input type="text" value={gstNumber} onChange={(e) => setGstNumber(e.target.value)} className={inputClass} placeholder="22AAAAA0000A1Z5" required />
                     </div>
                     <div>
                       <label className={labelClass}>Daily Capacity (Meals)</label>
-                      <input type="number" value={preparationCapacityPerDay} onChange={(e) => setPreparationCapacityPerDay(e.target.value)} className={inputClass} placeholder="e.g. 500" />
+                      <input type="number" value={preparationCapacityPerDay} onChange={(e) => setPreparationCapacityPerDay(e.target.value)} className={inputClass} placeholder="e.g. 500" required />
                     </div>
                     <div>
                       <label className={labelClass}>Cuisine Types (Comma Separated)</label>
-                      <input type="text" value={cuisineTypes} onChange={(e) => setCuisineTypes(e.target.value)} className={inputClass} placeholder="e.g. Infant Meals, Toddler Puree" />
+                      <input type="text" value={cuisineTypes} onChange={(e) => setCuisineTypes(e.target.value)} className={inputClass} placeholder="e.g. Infant Meals, Toddler Puree" required />
                     </div>
                     <div className="md:col-span-2">
                       <label className={labelClass}>Operating Hours</label>
                       <div className="flex items-center gap-4">
                         <div className="relative flex-1">
                           <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-black/40" />
-                          <input type="time" value={openTime} onChange={(e) => setOpenTime(e.target.value)} className={`${inputClass} pl-9`} />
+                          <input type="time" value={openTime} onChange={(e) => setOpenTime(e.target.value)} className={`${inputClass} pl-9`} required />
                         </div>
                         <span className="text-sm font-medium text-black/60">to</span>
                         <div className="relative flex-1">
                           <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-black/40" />
-                          <input type="time" value={closeTime} onChange={(e) => setCloseTime(e.target.value)} className={`${inputClass} pl-9`} />
+                          <input type="time" value={closeTime} onChange={(e) => setCloseTime(e.target.value)} className={`${inputClass} pl-9`} required />
                         </div>
                       </div>
                     </div>
