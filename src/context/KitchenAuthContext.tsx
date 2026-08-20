@@ -83,14 +83,17 @@ export function KitchenAuthProvider({ children }: { children: React.ReactNode })
   useEffect(() => {
     const saved = localStorage.getItem("moncradel_kitchen_auth");
     const token = localStorage.getItem("moncradel_kitchen_token");
-    if (saved === "true" && token) {
+    const hasCookie = document.cookie.includes("moncradel_kitchen_token=");
+
+    if (saved === "true" && token && hasCookie) {
       setIsAuthenticated(true);
       // Check profile completion after auth is confirmed
       checkProfileCompletion();
     } else {
-      // If auth flag is set but token is missing, clean up
-      if (saved === "true" && !token) {
+      // If auth flag is set but token or cookie is missing, clean up to prevent redirect loops
+      if (saved === "true") {
         localStorage.removeItem("moncradel_kitchen_auth");
+        localStorage.removeItem("moncradel_kitchen_token");
       }
       setIsAuthenticated(false);
     }

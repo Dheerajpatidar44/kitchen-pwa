@@ -5,7 +5,6 @@ import Image from "next/image";
 import { Search, Plus, Bell, X, AlertTriangle, ChefHat, CheckCircle2, ChevronRight, PackageCheck, User, LogOut } from "lucide-react";
 import axios from "axios";
 import { useState, useRef, useEffect } from "react";
-import { INITIAL_INVENTORY, INITIAL_KITCHEN_ORDERS, INITIAL_COOKING_BATCHES } from "@/data/mockData";
 
 export default function Header() {
   const [showSearchInput, setShowSearchInput] = useState(false);
@@ -17,6 +16,11 @@ export default function Header() {
   const searchRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
 
+  const [orders, setOrders] = useState<any[]>([]);
+  const [batches, setBatches] = useState<any[]>([]);
+  const [inventory, setInventory] = useState<any[]>([]);
+  const [hasFetchedSearch, setHasFetchedSearch] = useState(false);
+
   const notifications = [
     { id: '1', title: 'Low Stock Alert: Organic Carrots', time: '10m ago', type: 'alert', text: 'Stock down to 4.2 kg (Threshold 15 kg)' },
     { id: '2', title: 'Batch #3999 Finishing Packaging', time: '25m ago', type: 'batch', text: 'Sweet Potato Mash ready for labeling' },
@@ -26,16 +30,40 @@ export default function Header() {
   const unreadCount = notifications.length;
 
   const filteredOrders = searchQuery.trim()
-    ? INITIAL_KITCHEN_ORDERS.filter(o => o.id.toLowerCase().includes(searchQuery.toLowerCase()) || (o.babyName || "").toLowerCase().includes(searchQuery.toLowerCase()))
+    ? orders.filter(o => (o._id || "").toLowerCase().includes(searchQuery.toLowerCase()) || (o.customerName || "").toLowerCase().includes(searchQuery.toLowerCase()) || (o.items?.[0]?.name || "").toLowerCase().includes(searchQuery.toLowerCase()))
     : [];
 
   const filteredBatches = searchQuery.trim()
-    ? INITIAL_COOKING_BATCHES.filter(b => b.batchNumber.toLowerCase().includes(searchQuery.toLowerCase()) || b.recipeName.toLowerCase().includes(searchQuery.toLowerCase()))
+    ? batches.filter(b => (b.batchNumber || "").toLowerCase().includes(searchQuery.toLowerCase()) || (b.recipeName || "").toLowerCase().includes(searchQuery.toLowerCase()))
     : [];
 
   const filteredStock = searchQuery.trim()
-    ? INITIAL_INVENTORY.filter(i => i.name.toLowerCase().includes(searchQuery.toLowerCase()) || i.sku.toLowerCase().includes(searchQuery.toLowerCase()))
+    ? inventory.filter(i => (i.name || "").toLowerCase().includes(searchQuery.toLowerCase()) || (i.sku || "").toLowerCase().includes(searchQuery.toLowerCase()))
     : [];
+
+  const handleSearchFocus = async () => {
+    setShowSearchDropdown(true);
+    if (!hasFetchedSearch) {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+        const token = localStorage.getItem("moncradel_kitchen_token") || localStorage.getItem("token") || "";
+        const config = { headers: { Authorization: `Bearer ${token}` } };
+        
+        const [ordersRes, batchesRes, inventoryRes] = await Promise.all([
+          axios.get(`${apiUrl}/orders?limit=100`, config),
+          axios.get(`${apiUrl}/batches?limit=50`, config),
+          axios.get(`${apiUrl}/inventory?limit=100`, config)
+        ]);
+
+        setOrders(ordersRes.data.data || []);
+        setBatches(batchesRes.data.data || []);
+        setInventory(inventoryRes.data.data || []);
+        setHasFetchedSearch(true);
+      } catch (err) {
+        console.error("Failed to load search data", err);
+      }
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -102,9 +130,9 @@ export default function Header() {
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
-                setShowSearchDropdown(true);
+                handleSearchFocus();
               }}
-              onFocus={() => setShowSearchDropdown(true)}
+              onFocus={handleSearchFocus}
               className="w-full bg-white border border-brand/20 rounded-full pl-10 pr-9 py-2 text-sm text-brand placeholder-brand/40 focus:outline-none focus:border-brand/50 transition-all shadow-xs"
             />
             {searchQuery && (
@@ -135,13 +163,13 @@ export default function Header() {
                 )}
                 {filteredOrders.map((o) => (
                   <Link
-                    key={o.id}
+                    key={o._id}
                     href="/orders"
                     onClick={() => setShowSearchDropdown(false)}
                     className="p-2.5 flex items-center justify-between hover:bg-slate-50 transition-colors"
                   >
-                    <span className="font-bold text-slate-900">{o.id} - {o.babyName}</span>
-                    <span className="text-slate-500">{o.items[0]?.name || "Custom Meal"}</span>
+                    <span className="font-bold text-slate-900">#{o._id ? o._id.slice(-6).toUpperCase() : 'ORD'} - {o.customerName || "Customer"}</span>
+                    <span className="text-slate-500">{o.items?.[0]?.name || "Custom Meal"}</span>
                   </Link>
                 ))}
 
@@ -152,7 +180,7 @@ export default function Header() {
                 )}
                 {filteredBatches.map((b) => (
                   <Link
-                    key={b.id}
+                    key={b._id}
                     href="/cooking-batches"
                     onClick={() => setShowSearchDropdown(false)}
                     className="p-2.5 flex items-center justify-between hover:bg-slate-50 transition-colors"
@@ -169,13 +197,13 @@ export default function Header() {
                 )}
                 {filteredStock.map((s) => (
                   <Link
-                    key={s.id}
+                    key={s._id}
                     href="/stock-management"
                     onClick={() => setShowSearchDropdown(false)}
                     className="p-2.5 flex items-center justify-between hover:bg-slate-50 transition-colors"
                   >
                     <span className="font-bold text-slate-900">{s.name} ({s.sku})</span>
-                    <span className={`font-semibold ${s.status === 'LOW STOCK' ? 'text-rose-600' : 'text-slate-700'}`}>{s.currentStock} {s.unit}</span>
+                    <span className={`font-semibold ${s.quantity <= (s.minThreshold || 10) ? 'text-rose-600' : 'text-slate-700'}`}>{s.quantity} {s.unit}</span>
                   </Link>
                 ))}
               </div>
