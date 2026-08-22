@@ -22,10 +22,19 @@ export default function RegisterPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<{name?: boolean; phone?: boolean; email?: boolean; password?: boolean; confirmPassword?: boolean; otp?: boolean}>({});
 
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!regEmail || !regName || !regPhone || !regPassword || !regConfirmPassword) return;
+    const errors: {name?: boolean; phone?: boolean; email?: boolean; password?: boolean; confirmPassword?: boolean} = {};
+    if (!regName) errors.name = true;
+    if (!regPhone) errors.phone = true;
+    if (!regEmail) errors.email = true;
+    if (!regPassword) errors.password = true;
+    if (!regConfirmPassword) errors.confirmPassword = true;
+    setFieldErrors(errors);
+
+    if (Object.keys(errors).length > 0) return;
     
     if (regPassword !== regConfirmPassword) {
       setErrorMsg("Passwords do not match.");
@@ -62,7 +71,10 @@ export default function RegisterPage() {
 
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!regName || !regPhone || !regPassword || !regOtp) return;
+    if (!regOtp) {
+      setFieldErrors((prev) => ({ ...prev, otp: true }));
+      return;
+    }
     
     setIsLoading(true);
     setErrorMsg("");
@@ -195,16 +207,18 @@ export default function RegisterPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1">
                     <label className="text-[14px] font-medium text-slate-800 ml-1">Full Name</label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                    <div className={`relative flex items-center bg-white border ${fieldErrors.name ? 'border-red-400' : 'border-slate-200 focus-within:border-brand'} rounded-xl transition-all`}>
+                      <div className="pl-3.5 flex items-center pointer-events-none">
                         <User className="h-4 w-4 text-slate-400" />
                       </div>
                       <input
                         type="text"
-                        required
                         value={regName}
-                        onChange={(e) => setRegName(e.target.value)}
-                        className="w-full pl-10 pr-3 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 text-[15px] font-medium focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all"
+                        onChange={(e) => {
+                          setRegName(e.target.value);
+                          if (fieldErrors.name) setFieldErrors({ ...fieldErrors, name: false });
+                        }}
+                        className="w-full pl-3 pr-3 py-2.5 bg-transparent text-slate-900 text-[15px] font-medium focus:outline-none"
                         placeholder="e.g., John Doe"
                       />
                     </div>
@@ -212,17 +226,19 @@ export default function RegisterPage() {
 
                   <div className="space-y-1">
                     <label className="text-[14px] font-medium text-slate-800 ml-1">Phone Number</label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                    <div className={`relative flex items-center bg-white border ${fieldErrors.phone ? 'border-red-400' : 'border-slate-200 focus-within:border-brand'} rounded-xl transition-all`}>
+                      <div className="pl-3.5 flex items-center pointer-events-none">
                         <Phone className="h-4 w-4 text-slate-400" />
                       </div>
                       <input
                         type="tel"
-                        required
                         maxLength={10}
                         value={regPhone}
-                        onChange={(e) => setRegPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                        className="w-full pl-10 pr-3 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 text-[15px] font-medium focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all"
+                        onChange={(e) => {
+                          setRegPhone(e.target.value.replace(/\D/g, '').slice(0, 10));
+                          if (fieldErrors.phone) setFieldErrors({ ...fieldErrors, phone: false });
+                        }}
+                        className="w-full pl-3 pr-3 py-2.5 bg-transparent text-slate-900 text-[15px] font-medium focus:outline-none"
                         placeholder="e.g., 9876543210"
                       />
                     </div>
@@ -231,16 +247,18 @@ export default function RegisterPage() {
 
                 <div className="space-y-1">
                   <label className="text-[14px] font-medium text-slate-800 ml-1">Email Address</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <div className={`relative flex items-center bg-white border ${fieldErrors.email ? 'border-red-400' : 'border-slate-200 focus-within:border-brand'} rounded-xl transition-all`}>
+                    <div className="pl-3.5 flex items-center pointer-events-none">
                       <Mail className="h-4 w-4 text-slate-400" />
                     </div>
                     <input
                       type="email"
-                      required
                       value={regEmail}
-                      onChange={(e) => setRegEmail(e.target.value)}
-                      className="w-full pl-10 pr-3 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 text-[15px] font-medium focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all"
+                      onChange={(e) => {
+                        setRegEmail(e.target.value);
+                        if (fieldErrors.email) setFieldErrors({ ...fieldErrors, email: false });
+                      }}
+                      className="w-full pl-3 pr-3 py-2.5 bg-transparent text-slate-900 text-[15px] font-medium focus:outline-none"
                       placeholder="e.g., owner@kitchen.com"
                     />
                   </div>
@@ -249,20 +267,22 @@ export default function RegisterPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1">
                     <label className="text-[14px] font-medium text-slate-800 ml-1">Password</label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                    <div className={`relative flex items-center bg-white border ${fieldErrors.password ? 'border-red-400' : 'border-slate-200 focus-within:border-brand'} rounded-xl transition-all`}>
+                      <div className="pl-3.5 flex items-center pointer-events-none">
                         <Lock className="h-4 w-4 text-slate-400" />
                       </div>
                       <input
                         type={showPassword ? "text" : "password"}
-                        required
                         value={regPassword}
-                        onChange={(e) => setRegPassword(e.target.value)}
-                        className="w-full pl-10 pr-9 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 text-[15px] font-medium focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all"
+                        onChange={(e) => {
+                          setRegPassword(e.target.value);
+                          if (fieldErrors.password) setFieldErrors({ ...fieldErrors, password: false });
+                        }}
+                        className="w-full pl-3 pr-9 py-2.5 bg-transparent text-slate-900 text-[15px] font-medium focus:outline-none"
                         placeholder="At least 8 characters"
                       />
                       <div 
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                        className="absolute right-0 pr-3 flex items-center cursor-pointer h-full"
                         onClick={() => setShowPassword(!showPassword)}
                       >
                         {showPassword ? (
@@ -276,20 +296,22 @@ export default function RegisterPage() {
 
                   <div className="space-y-1">
                     <label className="text-[14px] font-medium text-slate-800 ml-1">Confirm Password</label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                    <div className={`relative flex items-center bg-white border ${fieldErrors.confirmPassword ? 'border-red-400' : 'border-slate-200 focus-within:border-brand'} rounded-xl transition-all`}>
+                      <div className="pl-3.5 flex items-center pointer-events-none">
                         <Lock className="h-4 w-4 text-slate-400" />
                       </div>
                       <input
                         type={showConfirmPassword ? "text" : "password"}
-                        required
                         value={regConfirmPassword}
-                        onChange={(e) => setRegConfirmPassword(e.target.value)}
-                        className="w-full pl-10 pr-9 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 text-[15px] font-medium focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all"
+                        onChange={(e) => {
+                          setRegConfirmPassword(e.target.value);
+                          if (fieldErrors.confirmPassword) setFieldErrors({ ...fieldErrors, confirmPassword: false });
+                        }}
+                        className="w-full pl-3 pr-9 py-2.5 bg-transparent text-slate-900 text-[15px] font-medium focus:outline-none"
                         placeholder="Re-enter your password"
                       />
                       <div 
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                        className="absolute right-0 pr-3 flex items-center cursor-pointer h-full"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       >
                         {showConfirmPassword ? (
@@ -343,11 +365,13 @@ export default function RegisterPage() {
                   <label className="text-[14px] font-medium text-slate-800 ml-1">Email OTP</label>
                   <input
                     type="text"
-                    required
                     maxLength={4}
                     value={regOtp}
-                    onChange={(e) => setRegOtp(e.target.value)}
-                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 text-[15px] font-medium tracking-widest text-center focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all"
+                    onChange={(e) => {
+                      setRegOtp(e.target.value.replace(/\D/g, ''));
+                      if (fieldErrors.otp) setFieldErrors({ ...fieldErrors, otp: false });
+                    }}
+                    className={`w-full px-4 py-3 bg-white border ${fieldErrors.otp ? 'border-red-400' : 'border-slate-200 focus:border-brand'} rounded-xl text-slate-900 text-[15px] font-medium tracking-widest text-center focus:outline-none transition-all`}
                     placeholder="0000"
                   />
                 </div>

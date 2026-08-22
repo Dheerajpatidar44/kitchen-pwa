@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { KitchenAuthProvider, useKitchenAuth } from "@/context/KitchenAuthContext";
 import Header from "@/components/Header";
@@ -8,6 +8,7 @@ import Navigation from "@/components/Navigation";
 import Sidebar from "@/components/Sidebar";
 import QuickActionModal from "@/components/QuickActionModal";
 import PrintableLabelModal from "@/components/PrintableLabelModal";
+import SplashScreen from "@/components/mobile/SplashScreen";
 import { User, ArrowRight, ShieldCheck } from "lucide-react";
 import { requestForToken, setupMessageListener } from "@/lib/firebase";
 
@@ -81,7 +82,7 @@ function KitchenAppInner({ children }: { children: React.ReactNode }) {
           }
         }
       });
-      
+
       setupMessageListener((payload) => {
         const title = payload?.notification?.title || "New Notification";
         const options = {
@@ -92,8 +93,8 @@ function KitchenAppInner({ children }: { children: React.ReactNode }) {
         // Show native browser notification even when app is open
         if ('Notification' in window && Notification.permission === 'granted') {
           const notification = new Notification(title, options);
-          
-          notification.onclick = function() {
+
+          notification.onclick = function () {
             window.focus();
             window.location.href = '/orders';
             this.close();
@@ -125,46 +126,78 @@ function KitchenAppInner({ children }: { children: React.ReactNode }) {
     <>
 
       {/* AUTHENTICATED: Fixed Shell — Sidebar & Header never scroll */}
-        <div className="h-[100dvh] flex bg-[#F8F9FA] text-slate-800 antialiased selection:bg-[#A5D8FF] font-sans overflow-hidden">
-          {/* Desktop Navigation Sidebar — Fixed column, never scrolls */}
-          <div className="hidden lg:flex shrink-0">
-            <Sidebar />
-          </div>
-
-          {/* Right Column: Header + Scrollable Content */}
-          <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-            {/* Header — Fixed at top of content column */}
-            <div className={`shrink-0 z-30 ${pathname === '/more' ? 'hidden md:block' : ''}`}>
-              <Header />
-            </div>
-
-            {/* Main Content — ONLY this area scrolls */}
-            {showProfileGate ? (
-              <ProfileIncompleteOverlay />
-            ) : (
-              <main className={`flex-1 overflow-y-auto lg:pb-8 ${pathname === '/more' ? 'p-0 md:px-4 md:py-6 md:pb-24' : 'px-4 py-6 pb-24'}`}>
-                <div className="w-full">
-                  {children}
-                </div>
-              </main>
-            )}
-          </div>
-
-          {/* Mobile & Tablet Bottom Navigation Bar */}
-          {pathname !== '/more' && !showProfileGate && (
-            <div className="lg:hidden">
-              <Navigation mode="mobile" />
-            </div>
-          )}
-
-          <QuickActionModal />
-          <PrintableLabelModal />
+      <div className="h-[100dvh] flex bg-[#F8F9FA] text-slate-800 antialiased selection:bg-[#A5D8FF] font-sans overflow-hidden">
+        {/* Desktop Navigation Sidebar — Fixed column, never scrolls */}
+        <div className="hidden lg:flex shrink-0">
+          <Sidebar />
         </div>
+
+        {/* Right Column: Header + Scrollable Content */}
+        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+          {/* Header — Fixed at top of content column */}
+          <div className={`shrink-0 z-30 ${pathname === '/more' ? 'hidden md:block' : ''}`}>
+            <Header />
+          </div>
+
+          {/* Main Content — ONLY this area scrolls */}
+          {showProfileGate ? (
+            <ProfileIncompleteOverlay />
+          ) : (
+            <main className={`flex-1 overflow-y-auto lg:pb-8 ${pathname === '/more' ? 'p-0 md:px-4 md:py-6 md:pb-24' : 'px-4 py-6 pb-24'}`}>
+              <div className="w-full">
+                {children}
+              </div>
+            </main>
+          )}
+        </div>
+
+        {/* Mobile & Tablet Bottom Navigation Bar */}
+        {pathname !== '/more' && !showProfileGate && (
+          <div className="lg:hidden">
+            <Navigation mode="mobile" />
+          </div>
+        )}
+
+        <QuickActionModal />
+        <PrintableLabelModal />
+      </div>
     </>
   );
 }
 
 export default function KitchenAppShell({ children }: { children: React.ReactNode }) {
+  const [showSplash, setShowSplash] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    // If it's desktop view (width > 768px), don't show splash screen
+    const isDesktop = window.innerWidth > 768;
+    const splashSeen = sessionStorage.getItem("moncradel_kitchen_splash");
+    
+    if (isDesktop || splashSeen) {
+      setShowSplash(false);
+      // Ensure we don't show it later if they resize
+      if (isDesktop && !splashSeen) {
+        sessionStorage.setItem("moncradel_kitchen_splash", "true");
+      }
+    } else {
+      setShowSplash(true);
+    }
+  }, []);
+
+  const handleSplashComplete = () => {
+    sessionStorage.setItem("moncradel_kitchen_splash", "true");
+    setShowSplash(false);
+  };
+
+  // Prevent flicker before reading sessionStorage
+  if (showSplash === null) {
+    return <div className="min-h-screen w-full bg-[#F8F9FA]" />;
+  }
+
+  if (showSplash) {
+    return <SplashScreen onComplete={handleSplashComplete} />;
+  }
+
   return (
     <KitchenAuthProvider>
       <KitchenAppInner>{children}</KitchenAppInner>

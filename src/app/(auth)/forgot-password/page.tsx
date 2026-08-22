@@ -19,10 +19,14 @@ export default function ForgotPasswordPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<{email?: boolean; otp?: boolean; newPassword?: boolean}>({});
 
   const handleRequestOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email) {
+      setFieldErrors({ email: true });
+      return;
+    }
 
     setIsLoading(true);
     setErrorMsg("");
@@ -52,7 +56,12 @@ export default function ForgotPasswordPage() {
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!otp || !newPassword) return;
+    const errors: {otp?: boolean; newPassword?: boolean} = {};
+    if (!otp) errors.otp = true;
+    if (!newPassword) errors.newPassword = true;
+    setFieldErrors(errors);
+
+    if (Object.keys(errors).length > 0) return;
 
     setIsLoading(true);
     setErrorMsg("");
@@ -136,16 +145,18 @@ export default function ForgotPasswordPage() {
             <form onSubmit={handleRequestOtp} className="space-y-5">
               <div className="space-y-1.5">
                 <label className="text-[13px] font-medium text-slate-700 ml-1">Email Address</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <div className={`relative flex items-center bg-slate-50 border ${fieldErrors.email ? 'border-red-400' : 'border-slate-200 focus-within:border-brand'} rounded-xl transition-all`}>
+                  <div className="pl-4 flex items-center pointer-events-none">
                     <Mail className="h-5 w-5 text-slate-400" />
                   </div>
                   <input
                     type="email"
-                    required
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-[15px] font-medium focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all placeholder:text-slate-400 placeholder:font-normal"
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (fieldErrors.email) setFieldErrors({ ...fieldErrors, email: false });
+                    }}
+                    className="w-full pl-3 pr-4 py-3.5 bg-transparent text-slate-900 text-[15px] font-medium focus:outline-none placeholder:text-slate-400 placeholder:font-normal"
                     placeholder="e.g., john@example.com"
                   />
                 </div>
@@ -167,36 +178,43 @@ export default function ForgotPasswordPage() {
                 <label className="text-[13px] font-medium text-slate-700 ml-1">4-Digit OTP</label>
                 <input
                   type="text"
-                  required
                   maxLength={4}
                   value={otp}
-                  onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ""))}
-                  className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-[20px] font-bold tracking-[0.5em] text-center focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all placeholder:text-slate-300 placeholder:tracking-normal placeholder:text-[15px] placeholder:font-normal"
+                  onChange={(e) => {
+                    setOtp(e.target.value.replace(/[^0-9]/g, ""));
+                    if (fieldErrors.otp) setFieldErrors({ ...fieldErrors, otp: false });
+                  }}
+                  className={`w-full px-4 py-3.5 bg-slate-50 border ${fieldErrors.otp ? 'border-red-400' : 'border-slate-200 focus:border-brand'} rounded-xl text-slate-900 text-[20px] font-bold tracking-[0.5em] text-center focus:outline-none transition-all placeholder:text-slate-300 placeholder:tracking-normal placeholder:text-[15px] placeholder:font-normal`}
                   placeholder="0000"
                 />
               </div>
 
               <div className="space-y-1.5">
                 <label className="text-[13px] font-medium text-slate-700 ml-1">New Password</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <div className={`relative flex items-center bg-slate-50 border ${fieldErrors.newPassword ? 'border-red-400' : 'border-slate-200 focus-within:border-brand'} rounded-xl transition-all`}>
+                  <div className="pl-4 flex items-center pointer-events-none">
                     <Lock className="h-5 w-5 text-slate-400" />
                   </div>
                   <input
                     type={showPassword ? "text" : "password"}
-                    required
                     value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    className="w-full pl-11 pr-11 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-[15px] font-medium focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all placeholder:text-slate-400 placeholder:font-normal"
+                    onChange={(e) => {
+                      setNewPassword(e.target.value);
+                      if (fieldErrors.newPassword) setFieldErrors({ ...fieldErrors, newPassword: false });
+                    }}
+                    className="w-full pl-3 pr-11 py-3.5 bg-transparent text-slate-900 text-[15px] font-medium focus:outline-none placeholder:text-slate-400 placeholder:font-normal"
                     placeholder="Create a strong password"
                   />
-                  <button 
-                    type="button" 
+                  <div 
+                    className="absolute right-0 pr-4 flex items-center cursor-pointer h-full"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600"
                   >
-                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                  </button>
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5 text-slate-400 hover:text-slate-600 transition-colors" />
+                    ) : (
+                      <Eye className="w-5 h-5 text-slate-400 hover:text-slate-600 transition-colors" />
+                    )}
+                  </div>
                 </div>
               </div>
 

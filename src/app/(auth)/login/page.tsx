@@ -17,6 +17,7 @@ export default function LoginPage() {
   const [loginPassword, setLoginPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<{email?: boolean; password?: boolean}>({});
 
   // Redirect if already logged in
   useEffect(() => {
@@ -27,7 +28,12 @@ export default function LoginPage() {
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!loginEmail || !loginPassword) return;
+    const errors: {email?: boolean; password?: boolean} = {};
+    if (!loginEmail) errors.email = true;
+    if (!loginPassword) errors.password = true;
+    setFieldErrors(errors);
+    
+    if (Object.keys(errors).length > 0) return;
     
     setIsLoading(true);
     setErrorMsg("");
@@ -166,16 +172,18 @@ export default function LoginPage() {
               
               <div className="space-y-1">
                 <label className="text-[14px] font-medium text-slate-800 ml-1">Email Address</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                <div className={`relative flex items-center bg-white border ${fieldErrors.email ? 'border-red-400' : 'border-slate-200 focus-within:border-brand'} rounded-xl transition-all`}>
+                  <div className="pl-3.5 flex items-center pointer-events-none">
                     <Mail className="h-4 w-4 text-slate-400" />
                   </div>
                   <input
                     type="email"
-                    required
                     value={loginEmail}
-                    onChange={(e) => setLoginEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 text-[15px] font-medium focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all"
+                    onChange={(e) => {
+                      setLoginEmail(e.target.value);
+                      if (fieldErrors.email) setFieldErrors({ ...fieldErrors, email: false });
+                    }}
+                    className="w-full pl-3 pr-4 py-3 bg-transparent text-slate-900 text-[15px] font-medium focus:outline-none"
                     placeholder="e.g., owner@kitchen.com"
                   />
                 </div>
@@ -183,20 +191,22 @@ export default function LoginPage() {
 
               <div className="space-y-1">
                 <label className="text-[14px] font-medium text-slate-800 ml-1">Password</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                <div className={`relative flex items-center bg-white border ${fieldErrors.password ? 'border-red-400' : 'border-slate-200 focus-within:border-brand'} rounded-xl transition-all`}>
+                  <div className="pl-3.5 flex items-center pointer-events-none">
                     <Lock className="h-4 w-4 text-slate-400" />
                   </div>
                   <input
                     type={showPassword ? "text" : "password"}
-                    required
                     value={loginPassword}
-                    onChange={(e) => setLoginPassword(e.target.value)}
-                    className="w-full pl-10 pr-10 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 text-[15px] font-medium focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all"
+                    onChange={(e) => {
+                      setLoginPassword(e.target.value);
+                      if (fieldErrors.password) setFieldErrors({ ...fieldErrors, password: false });
+                    }}
+                    className="w-full pl-3 pr-10 py-3 bg-transparent text-slate-900 text-[15px] font-medium focus:outline-none"
                     placeholder="Enter your secure password"
                   />
                   <div 
-                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center cursor-pointer"
+                    className="absolute right-0 pr-3.5 flex items-center cursor-pointer h-full"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
