@@ -8,16 +8,6 @@ export default function PrivacyPolicyPage() {
 
   return (
     <div className="min-h-screen font-sans pb-24 md:pb-8 pt-0 md:pt-8 max-w-5xl mx-auto">
-      {/* Mobile Sticky Header (Visible only on Mobile) */}
-      <div className="md:hidden sticky top-0 z-40 bg-white flex items-center py-4 -mx-4 px-4 sm:-mx-6 sm:px-6 mb-4 shadow-sm">
-        <button
-          onClick={() => router.back()}
-          className="flex items-center gap-2 text-slate-900"
-        >
-          <ChevronLeft className="w-6 h-6" />
-          <span className="text-[17px] sm:text-[18px] font-medium text-slate-900">Privacy Policy</span>
-        </button>
-      </div>
 
       {/* Desktop Page Header */}
       <div className="hidden md:flex flex-col mb-4 px-1 lg:mb-8">
