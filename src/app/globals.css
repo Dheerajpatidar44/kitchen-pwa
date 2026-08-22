@@ -215,3 +215,8 @@ textarea {
     scrollbar-width: none !important;  /* Firefox */
   }
 }
+
+/* Ensure SweetAlert always appears above any custom modals (like z-[99999] in orders) */
+.swal2-container {
+  z-index: 1000000 !important;
+}

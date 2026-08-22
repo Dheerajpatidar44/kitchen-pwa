@@ -14,6 +14,7 @@ import {
   ChefHat
 } from "lucide-react";
 import Swal from "sweetalert2";
+import axios from "axios";
 
 export default function ProductionPage() {
   const [batches, setBatches] = useState<any[]>([]);
@@ -97,6 +98,29 @@ export default function ProductionPage() {
   };
 
   const handleCreateBatch = async () => {
+    // Check if kitchen is open
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const token = localStorage.getItem("moncradel_kitchen_token") || "";
+      const res = await axios.get(`${apiUrl}/users/profile`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const isKitchenOpen = res.data?.profile?.isOpen;
+      if (!isKitchenOpen) {
+        Swal.fire({
+          title: 'Kitchen Closed!',
+          text: "Please turn your kitchen status to 'Currently Open' in the Profile page before creating a new batch.",
+          icon: 'warning',
+          confirmButtonColor: '#ea580c',
+          confirmButtonText: 'Got it',
+          customClass: { popup: 'rounded-2xl font-sans' }
+        });
+        return;
+      }
+    } catch(e) {
+      console.error("Failed to check kitchen status", e);
+    }
+
     if (!newBatchMeal || newBatchQuantity <= 0) {
       Swal.fire({
         icon: 'error',

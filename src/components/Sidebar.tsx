@@ -40,6 +40,8 @@ export default function Sidebar() {
     // { name: "Staff Management", href: "/staff-management", icon: Users },
     { name: "Reports", href: "/reports", icon: BarChart3 },
     { name: "Profile", href: "/profile", icon: User },
+    { name: "Terms of Service", href: "/terms", icon: BookOpen },
+    { name: "Privacy Policy", href: "/privacy", icon: ShieldCheck },
   ];
 
   const handleLogout = () => {

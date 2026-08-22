@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import { Play, MoreVertical, ChevronDown, Filter, Search, CheckCircle2, Clock, ShieldCheck, X, Calendar, Eye, Info, ClipboardList, Truck, Package, Timer } from "lucide-react";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 export interface KitchenOrder {
   id: string;
@@ -95,6 +96,34 @@ export default function IncomingOrdersPage() {
   }, []);
 
   const updateOrderStatus = async (orderId: string, newStatus: string, cancelReason?: string) => {
+    // Check kitchen open status if they are accepting/preparing an order
+    if (newStatus === "preparing" || newStatus === "ready") {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+        const token = localStorage.getItem("moncradel_kitchen_token") || "";
+        const res = await axios.get(`${apiUrl}/users/profile`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const isKitchenOpen = res.data?.profile?.isOpen;
+        if (!isKitchenOpen) {
+          Swal.fire({
+            title: 'Kitchen Closed!',
+            text: "Please turn your kitchen status to 'Currently Open' in the Profile page before accepting or updating orders.",
+            icon: 'warning',
+            confirmButtonColor: '#ea580c',
+            confirmButtonText: 'Got it',
+            customClass: {
+              popup: 'rounded-2xl font-sans',
+              confirmButton: 'rounded-xl font-medium shadow-sm'
+            }
+          });
+          return; // Prevent update
+        }
+      } catch(e) {
+        console.error("Failed to check kitchen status", e);
+      }
+    }
+
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
       const token = localStorage.getItem("moncradel_kitchen_token") || ""; 

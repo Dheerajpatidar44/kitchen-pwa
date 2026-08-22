@@ -9,6 +9,7 @@ import Sidebar from "@/components/Sidebar";
 import QuickActionModal from "@/components/QuickActionModal";
 import PrintableLabelModal from "@/components/PrintableLabelModal";
 import { User, ArrowRight, ShieldCheck } from "lucide-react";
+import { requestForToken, setupMessageListener } from "@/lib/firebase";
 
 function ProfileIncompleteOverlay() {
   const router = useRouter();
@@ -61,6 +62,46 @@ function KitchenAppInner({ children }: { children: React.ReactNode }) {
       router.push("/dashboard");
     }
   }, [isAuthLoading, isAuthenticated, isAuthRoute, pathname, router]);
+
+  useEffect(() => {
+    if (isAuthenticated && typeof window !== "undefined" && 'Notification' in window && Notification.permission !== 'denied') {
+      requestForToken().then(fcmToken => {
+        if (fcmToken) {
+          const token = localStorage.getItem("moncradel_kitchen_token");
+          const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+          if (token) {
+            fetch(`${apiUrl}/users/profile`, {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ fcmToken }),
+            }).catch(console.error);
+          }
+        }
+      });
+      
+      setupMessageListener((payload) => {
+        const title = payload?.notification?.title || "New Notification";
+        const options = {
+          body: payload?.notification?.body || "",
+          icon: '/icon-192x192.png',
+        };
+
+        // Show native browser notification even when app is open
+        if ('Notification' in window && Notification.permission === 'granted') {
+          const notification = new Notification(title, options);
+          
+          notification.onclick = function() {
+            window.focus();
+            window.location.href = '/orders';
+            this.close();
+          };
+        }
+      });
+    }
+  }, [isAuthenticated]);
 
   // If on an auth route, just render the auth page (Login/Register)
   if (isAuthRoute) {

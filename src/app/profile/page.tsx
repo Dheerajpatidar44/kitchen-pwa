@@ -196,6 +196,24 @@ export default function ProfilePage() {
     </div>
   );
 
+  const handleToggleStatus = async (newStatus: boolean) => {
+    setIsOpen(newStatus);
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const token = localStorage.getItem("moncradel_kitchen_token") || "";
+      await axios.put(`${apiUrl}/users/profile`, { isOpen: newStatus }, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+    } catch (err) {
+      console.error("Failed to toggle status", err);
+      alert("Failed to update kitchen status.");
+      setIsOpen(!newStatus);
+    }
+  };
+
   return (
     <div className="animate-fade-in-up pb-16 font-sans max-w-7xl mx-auto">
       
@@ -210,14 +228,20 @@ export default function ProfilePage() {
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={() => { logout(); window.location.href = "/login"; }}
-          className="hidden md:flex bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-medium text-[14px] px-4 py-2 rounded-lg transition-colors items-center justify-center gap-2 shrink-0 shadow-sm"
-        >
-          <LogOut className="w-4 h-4 text-rose-600" />
-          <span>Logout</span>
-        </button>
+        <div className="flex items-center gap-4">
+          <div className="hidden md:flex items-center bg-white border border-slate-200 px-4 py-2 rounded-xl gap-3">
+            <div className="flex flex-col text-right leading-tight">
+              <span className="text-[14px] font-bold text-slate-800">Kitchen Status</span>
+              <span className={`text-[12px] font-semibold ${isOpen ? 'text-emerald-600' : 'text-rose-500'}`}>
+                {isOpen ? "Currently Open" : "Currently Closed"}
+              </span>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer ml-1">
+              <input type="checkbox" className="sr-only peer" checked={isOpen} onChange={(e) => handleToggleStatus(e.target.checked)} />
+              <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-200 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 border border-slate-300 peer-checked:border-emerald-600"></div>
+            </label>
+          </div>
+        </div>
       </div>
 
       {saveSuccess && (

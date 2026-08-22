@@ -157,6 +157,16 @@ export default function MoreMenuPage() {
               </span>
             </div>
           </button>
+
+          {/* Footer Links */}
+          <div className="mt-8 mb-4 flex flex-col items-center justify-center gap-3 text-[13px] font-medium text-slate-400">
+            <div className="flex items-center gap-6">
+              <Link href="/privacy" className="hover:text-slate-900 transition-colors">Privacy Policy</Link>
+              <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+              <Link href="/terms" className="hover:text-slate-900 transition-colors">Terms of Service</Link>
+            </div>
+            <p>v1.0.0 • © {new Date().getFullYear()} Moncradle</p>
+          </div>
         </div>
       </div>
     </div>
