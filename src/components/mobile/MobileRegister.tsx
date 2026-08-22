@@ -135,6 +135,7 @@ export default function MobileRegister({ onSwitchToLogin }: MobileRegisterProps)
   };
 
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   return (
     <div className="flex flex-col h-[100dvh] w-full bg-[#FBF9F6] relative px-4 py-6 overflow-hidden font-sans">
@@ -289,7 +290,7 @@ export default function MobileRegister({ onSwitchToLogin }: MobileRegisterProps)
                       <Lock className="h-4 w-4 text-slate-400" strokeWidth={2} />
                     </div>
                     <input
-                      type={showPassword ? "text" : "password"}
+                      type={showConfirmPassword ? "text" : "password"}
                       required
                       value={regConfirmPassword}
                       onChange={(e) => setRegConfirmPassword(e.target.value)}
@@ -300,10 +301,10 @@ export default function MobileRegister({ onSwitchToLogin }: MobileRegisterProps)
                     />
                     <button 
                       type="button" 
-                      onClick={() => setShowPassword(!showPassword)}
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
                     >
-                      {showPassword ? <EyeOff className="h-4 w-4" strokeWidth={2} /> : <Eye className="h-4 w-4" strokeWidth={2} />}
+                      {showConfirmPassword ? <EyeOff className="h-4 w-4" strokeWidth={2} /> : <Eye className="h-4 w-4" strokeWidth={2} />}
                     </button>
                   </div>
                   {fieldErrors.confirmPassword && <p className="text-red-500 text-[11px] font-medium ml-1 mt-1">{fieldErrors.confirmPassword}</p>}

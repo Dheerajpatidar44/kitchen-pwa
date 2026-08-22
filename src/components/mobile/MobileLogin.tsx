@@ -62,11 +62,12 @@ export default function MobileLogin({ onSwitchToRegister }: MobileLoginProps) {
           role: data.role,
         }));
         
-        localStorage.setItem("moncradel_kitchen_logged_in", "true");
+        // This is needed for the current KitchenAuthContext implementation
+        localStorage.setItem("moncradel_kitchen_auth", "true");
         document.cookie = `moncradel_kitchen_token=${data.token}; path=/; max-age=86400; SameSite=Strict`;
         
         window.dispatchEvent(new Event("moncradel-login"));
-        window.location.href = "/";
+        window.location.href = "/dashboard";
       } else {
         setErrorMsg(data.message || "Invalid credentials.");
       }
